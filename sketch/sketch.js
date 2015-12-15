@@ -9,26 +9,9 @@ var subtitle= "Press an object to play"
 var requiredImages = 10;
 var dogAnimation;
 
-function preload(){
-
-  items = {
-    39  : new ScreenItem("assets/image/dog.png", 240, 116, 100, 0, loadSound('assets/sound/dog.wav')),
-    38  : new ScreenItem("assets/image/cow.png", 155, 170, 185, 0, loadSound('assets/sound/cow.wav')),
-    37  : new ScreenItem("assets/image/cat.png", 242, 198, 109, 0, loadSound('assets/sound/cat.wav')),
-    40  : new ScreenItem("assets/image/pig.png", 160, 194, 187, 0, loadSound('assets/sound/pig.wav')),
-    32  : new ScreenItem("assets/image/goat.png", 110, 197, 155, 0, loadSound('assets/sound/goat.wav')),
-    0   : new ScreenItem("assets/image/goat.png", 110, 197, 155, 0, loadSound('assets/sound/goat.wav')),
-
-
-  };
-}
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  currentHeight = windowHeight / requiredImages;
-  currentWidth = windowWidth / requiredImages;
-  
-  
+  loadItems();
 }
 
 function draw() {
@@ -41,12 +24,10 @@ function draw() {
   drawSprites();
 }
 
-var currentWidth;
-var currentHeight;
-
 var lastKey = 0;
 
 var pressed = false;
+
 var ScreenItem = function(img, r, g, b, o, sfx) {
   this.fileName = img
   this.sound = sfx
@@ -56,35 +37,71 @@ var ScreenItem = function(img, r, g, b, o, sfx) {
   this.opacity = o;
 };
 
-var items;
+var items = {};
 
-function keyPressed(){
-  if (!pressed) {
-    pressed = true;
-    if (lastKey != keyCode) {
+function loadItems() {
+  items[RIGHT_ARROW] = new ScreenItem("assets/image/dog.png", 240, 116, 100, 0, loadSound('assets/sound/dog.wav')),
+  items[UP_ARROW] = new ScreenItem("assets/image/cow.png", 155, 170, 185, 0, loadSound('assets/sound/cow.wav')),
+  items[LEFT_ARROW] = new ScreenItem("assets/image/cat.png", 242, 198, 109, 0, loadSound('assets/sound/cat.wav')),
+  items[DOWN_ARROW] = new ScreenItem("assets/image/pig.png", 160, 194, 187, 0, loadSound('assets/sound/pig.wav')),
+  //LEFT - MOUSE BUTTON
+  items[LEFT] = new ScreenItem("assets/image/goat.png", 110, 197, 155, 0, loadSound('assets/sound/goat.wav')),
+  items [32] = new ScreenItem("assets/image/duck.png", 204, 204, 255, 0, loadSound('assets/sound/duck.wav'))
+}
+
+//called once when a mouse button is pressed.
+function mousePressed() {
+  var item = items[mouseButton];
+  //if we have an item that maps to the mouse button that was clicked
+  //update the screen and display the item.
+  if (item) {
+   updateScreenForKey(mouseButton);
+   displayScreenItem(item);
+  }
+}
+
+//updates the state of the screen for the given key
+function updateScreenForKey(key) {
+    if (lastKey != key) {
+      //if the button pressed is different
+      //than the last button pressed
+      //clear all old images from the screen
       var sprites = getSprites();
       for (index in sprites) {
         sprites[index].remove();
       }
     }
+   lastKey = key;
+}
 
-    lastKey = keyCode;
+function keyPressed(){
+  //this 'if' check is preventing
+  //calling this code if a key is held down
+  if (!pressed) {
+    pressed = true;
+    updateScreenForKey(keyCode);
     var item = items[keyCode];
 
-    if (item instanceof ScreenItem) {
-
-      if (item.fileName) {
-        console.log("Adding image");
-        addImage(item.fileName);
-      }
-
-      item.sound.play();
-      r = item.red;
-      g = item.green;
-      b = item.blue;
-      o = item.opacity;
+    //if the value retrieved from the items object
+    //is a ScreenItem, we can go about displaying it
+      if (item instanceof ScreenItem) {
+        displayScreenItem(item);
       }
     }
+}
+
+//updates the screen with the given ScreenItem
+function displayScreenItem(item) {
+  if (item.fileName) {
+    console.log("Adding image");
+    addImage(item.fileName);
+  }
+
+  item.sound.play();
+  r = item.red;
+  g = item.green;
+  b = item.blue;
+  o = item.opacity;
 }
 
 function soundFinished(parameter) {
@@ -98,8 +115,8 @@ function keyReleased() {
 function addImage(img) {
   var imageWidth = windowWidth / requiredImages;
 
-  var xPosition = random(0, windowWidth) //(imageWidth + imageWidth * 0.5) * getSprites().length;
-  var yPosition = random(0, windowHeight)//windowHeight * 0.5 - currentHeight * 0.5;
+  var xPosition = random(0, windowWidth);
+  var yPosition = random(0, windowHeight);
 
   var spriteImage = loadImage(img);
   var sprite = createSprite(xPosition, yPosition);
