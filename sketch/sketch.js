@@ -45,7 +45,8 @@ function loadItems() {
   items[LEFT_ARROW] = new ScreenItem("assets/image/cat.png", 242, 198, 109, 0, loadSound('assets/sound/cat.wav')),
   items[DOWN_ARROW] = new ScreenItem("assets/image/pig.png", 160, 194, 187, 0, loadSound('assets/sound/pig.wav')),
   //LEFT - MOUSE BUTTON
-  items[LEFT] = new ScreenItem("assets/image/goat.png", 110, 197, 155, 0, loadSound('assets/sound/goat.wav'))
+  items[LEFT] = new ScreenItem("assets/image/goat.png", 110, 197, 155, 0, loadSound('assets/sound/goat.wav')),
+  items [32] = new ScreenItem("assets/image/duck.png", 204, 204, 255, 0, loadSound('assets/sound/duck.wav'))
 }
 
 //called once when a mouse button is pressed.
