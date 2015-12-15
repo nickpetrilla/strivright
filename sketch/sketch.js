@@ -46,6 +46,7 @@ function loadItems() {
   items[DOWN_ARROW] = new ScreenItem("assets/image/pig.png", 160, 194, 187, 0, loadSound('assets/sound/pig.wav')),
   //LEFT - MOUSE BUTTON
   items[LEFT] = new ScreenItem("assets/image/goat.png", 110, 197, 155, 0, loadSound('assets/sound/goat.wav')),
+  //SPACEBAR - 32 is what the keyboard event reports when SPACEBAR is pressed. No Spacebar item in P5
   items [32] = new ScreenItem("assets/image/duck.png", 204, 204, 255, 0, loadSound('assets/sound/duck.wav'))
 }
 
